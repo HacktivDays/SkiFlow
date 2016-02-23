@@ -14,3 +14,16 @@ Nb de personnes par remontée par heure
 
 ##Restitution des données
 TODO
+
+#REST API
+
+##PUT (/data)
+```
+ {
+    skiLiftId : 1,
+    state : 1, // 0 ==> vert, 1 ==> orange, 2 ==> rouge
+    priority: 1 // 0 ==> vidéo, 1 ==> manuel
+ }
+```
+
+##GET (/data/{panelId})
