@@ -1,21 +1,28 @@
 package com.visiativ.hd.ski.flow.rest;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
 
 /**
  * Created by visiativ on 23/02/16.
  */
 @Controller
-@RequestMapping("/sensor")
+@RequestMapping("/data")
 public class SensorController {
 
-    @RequestMapping(value = "/hello", method = RequestMethod.GET)
-    public
+    protected static final class STATUS{public static final int GREEN = 0;public static final int ORANGE = 0;public static final int RED = 2;}
+
+    @RequestMapping(value = "/{panelId}", method = RequestMethod.GET)
     @ResponseBody
-    String home() {
-        return "Hello World!";
+    public int home(@PathVariable("panelId") int panelId) {
+        switch (panelId) {
+            case 1:
+                return STATUS.GREEN;
+            case 2:
+                return STATUS.ORANGE;
+            default:
+                return STATUS.GREEN;
+        }
     }
 }
