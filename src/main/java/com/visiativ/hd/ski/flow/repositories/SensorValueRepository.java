@@ -7,4 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Created by visiativ on 23/02/16.
  */
 public interface SensorValueRepository extends MongoRepository<SensorValue, String> {
+    public Iterable<SensorValue> findBySkiLiftId(Integer skiLiftId);
 }
