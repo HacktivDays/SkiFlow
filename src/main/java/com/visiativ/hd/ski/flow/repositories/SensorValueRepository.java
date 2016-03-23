@@ -8,4 +8,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface SensorValueRepository extends MongoRepository<SensorValue, String> {
     public Iterable<SensorValue> findBySkiLiftId(Integer skiLiftId);
+
+    public SensorValue findOneBySkiLiftIdOrderByDateDesc(Integer skiLiftId);
+
+    public SensorValue findFirstBySkiLiftIdOrderByDateDesc(Integer skiLiftId);
 }

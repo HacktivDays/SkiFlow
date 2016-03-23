@@ -4,12 +4,12 @@ import com.visiativ.hd.ski.flow.domain.SensorValue;
 import com.visiativ.hd.ski.flow.repositories.SensorValueRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MimeType;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -19,6 +19,7 @@ import java.util.Date;
 @RequestMapping("/data")
 public class DataController {
 
+    private static final Map<Integer, Integer> FORCED = new ConcurrentHashMap<>();
     @Resource
     SensorValueRepository sensorValueRepository;
 
@@ -33,12 +34,18 @@ public class DataController {
 
         // Iterable<SensorValue> values = this.sensorValueRepository.findBySkiLiftId(panelId);
         //values.forEach(sensorValue -> System.out.println(sensorValue.getId() + " / " + sensorValue.getDate() + " / "+ sensorValue.getPriority() + " / " +sensorValue.getSkiLiftId() + " / " +sensorValue.getState()));
+        SensorValue slid0 = this.sensorValueRepository.findFirstBySkiLiftIdOrderByDateDesc(0);
+        SensorValue slid1 = this.sensorValueRepository.findFirstBySkiLiftIdOrderByDateDesc(1);
+        SensorValue slid2 = this.sensorValueRepository.findFirstBySkiLiftIdOrderByDateDesc(2);
+
+
+        //SensorValue slid2 = this.sensorValueRepository.findOneBySkiLiftIdOrderByDateDesc(0);
 
         StringBuilder response = new StringBuilder("");
-        response.append(STATUS.GREEN);
-        response.append(STATUS.RED);
-        response.append(STATUS.ORANGE);
-        response.append(STATUS.GREEN);
+        response.append(slid0.getState());
+        response.append(slid1.getState());
+        response.append(Math.max(slid0.getState(), slid1.getState()));
+        response.append(slid2.getState());
         return response.toString();
     }
 
@@ -50,13 +57,20 @@ public class DataController {
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.CREATED)
     public void putState(@RequestBody SensorValue value) {
-        value.setDate(new Date());
-        sensorValueRepository.insert(value);
-    }
 
-    protected static final class STATUS {
-        public static final int GREEN = 3;
-        public static final int ORANGE = 2;
-        public static final int RED = 1;
+        if (value.getPriority() == 1) {
+            FORCED.put(value.getSkiLiftId(), value.getState());
+        } else if (FORCED.get(value.getSkiLiftId()) != null && FORCED.get(value.getSkiLiftId()) != 3) {
+            value.setState(FORCED.get(value.getSkiLiftId()));
+        }
+
+        value.setDate(new Date());
+
+        System.out.println(value.toString());
+
+        sensorValueRepository.insert(value);
+        if (value.getPriority() == 1) {
+            FORCED.put(value.getSkiLiftId(), value.getState());
+        }
     }
 }

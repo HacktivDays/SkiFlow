@@ -55,4 +55,15 @@ public class SensorValue {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "SensorValue{" +
+                "id='" + id + '\'' +
+                ", skiLiftId=" + skiLiftId +
+                ", state=" + state +
+                ", priority=" + priority +
+                ", date=" + date +
+                '}';
+    }
 }
