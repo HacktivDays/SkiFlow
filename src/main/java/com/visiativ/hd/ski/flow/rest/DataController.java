@@ -25,25 +25,21 @@ public class DataController {
     /**
      * The LED display's arduino has to call this method to know what color display
      *
-     * @param panelId
      * @return 0/1/2 (Green/orange/red)
      */
-    @RequestMapping(value = "/{panelId}", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public int getSkiLiftState(@PathVariable("panelId") int panelId) {
+    public String getSkiLiftsStates() {
 
-        //Iterable<SensorValue> values = this.sensorValueRepository.findBySkiLiftId(panelId);
+        // Iterable<SensorValue> values = this.sensorValueRepository.findBySkiLiftId(panelId);
+        //values.forEach(sensorValue -> System.out.println(sensorValue.getId() + " / " + sensorValue.getDate() + " / "+ sensorValue.getPriority() + " / " +sensorValue.getSkiLiftId() + " / " +sensorValue.getState()));
 
-        switch (panelId) {
-            case 1:
-                return STATUS.GREEN;
-            case 2:
-                return STATUS.ORANGE;
-            case 3:
-                return STATUS.RED;
-            default:
-                return STATUS.GREEN;
-        }
+        StringBuilder response = new StringBuilder("");
+        response.append(STATUS.GREEN);
+        response.append(STATUS.RED);
+        response.append(STATUS.ORANGE);
+        response.append(STATUS.GREEN);
+        return response.toString();
     }
 
     /**
@@ -51,7 +47,7 @@ public class DataController {
      *
      * @param value
      */
-    @RequestMapping(method = RequestMethod.PUT, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.CREATED)
     public void putState(@RequestBody SensorValue value) {
         value.setDate(new Date());
@@ -59,8 +55,8 @@ public class DataController {
     }
 
     protected static final class STATUS {
-        public static final int GREEN = 0;
-        public static final int ORANGE = 1;
-        public static final int RED = 2;
+        public static final int GREEN = 3;
+        public static final int ORANGE = 2;
+        public static final int RED = 1;
     }
 }
